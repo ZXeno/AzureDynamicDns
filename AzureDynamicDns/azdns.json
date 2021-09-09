@@ -1,0 +1,9 @@
+{
+  "resourceGroup": "<insert_value_here>",
+  "zoneName": "<insert_value_here>",
+  "recordName": "<insert_value_here>",
+  "subscriptionId": "<insert_value_here>",
+  "tenantId": "<insert_value_here>",
+  "clientId": "<insert_value_here>",
+  "clientSecret": "<insert_value_here>"
+}
