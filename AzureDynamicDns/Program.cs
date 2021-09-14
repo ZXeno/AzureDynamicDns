@@ -30,15 +30,16 @@
             if (string.IsNullOrEmpty(options.ConfigFile))
             {
                 await logger.LogInfoAsync("No config file path was provided Using default.");
+                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile); 
                 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
                     || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    options.ConfigFile = Path.Combine(Environment.SpecialFolder.UserProfile.ToString(), "/.config/azdns/", ConfigFileName);
+                    options.ConfigFile = Path.Combine(userFolderPath, ".config/azdns", ConfigFileName);
                 }
                 else
                 {
-                    options.ConfigFile = Path.Combine(Environment.SpecialFolder.UserProfile.ToString(), "\\AppData\\azdns\\", ConfigFileName);
+                    options.ConfigFile = Path.Combine(userFolderPath, "AppData\\azdns\\", ConfigFileName);
                 }
             }
 
@@ -54,7 +55,7 @@
                 }
                 catch (Exception e)
                 {
-                    await logger.LogErrorAsync($"Unable to create configuration template:\n{e.Message}");
+                    await logger.LogErrorAsync($"Unable to create configuration template!\n----------\n{e.Message}");
                     await logger.LogInfoAsync("\nA configuration template should be in the working directory of this program by default. You may copy that and provide it vay the '-c' parameter like so: \"/path/to/executable -c /path/to/your/config_file.json\"", true);
                 }
 
