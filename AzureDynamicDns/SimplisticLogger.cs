@@ -19,7 +19,7 @@ namespace AzureDynamicDns
         public ConsoleColor ErrorColor = ConsoleColor.DarkRed;
         public ConsoleColor SuccessColor = ConsoleColor.Green;
 
-        public SimplisticLogger(string logFilePath, string dateTimeFormat = "o")
+        public SimplisticLogger(string logFilePath, string dateTimeFormat = "yyyy-MM-dd hh:mm:ss zz")
         {
             this.logFilePath = logFilePath;
             this.writeLogfile = !string.IsNullOrEmpty(this.logFilePath);

@@ -68,7 +68,7 @@ namespace AzureDynamicDns.Services
                 Metadata = new Dictionary<string, string>()
                 {
                     { "createdBy", "AzureDynamicDns" },
-                    { "updated", DateTimeOffset.UtcNow.ToString("O", CultureInfo.InvariantCulture) }
+                    { "updated", DateTimeOffset.UtcNow.ToString("yyyy-MM-dd hh:mm:ss zz", CultureInfo.InvariantCulture) }
                 }
             };
 
@@ -112,11 +112,11 @@ namespace AzureDynamicDns.Services
             
             if (providedConfig is null)
             {
-                this.logger.LogInfoAsync("No config file path was provided. Using default config path.").ConfigureAwait(true);
+                this.logger.LogInfoAsync("No config file path was provided. Using default config path.").ConfigureAwait(false);
                 configFilePath = Path.Combine(this.rootDirectoryPath, this.configFileDirectory, ConfigFileName);
             }
             
-            return Directory.Exists(configFilePath);
+            return File.Exists(configFilePath);
         }
 
         public async Task LoadServiceConfig(string providedConfig = null)
