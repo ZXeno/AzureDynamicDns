@@ -1,17 +1,14 @@
 ﻿namespace AzureDynamicDns
 {
     using System;
-    using System.IO;
-    using System.Runtime.InteropServices;
-    using System.Text.Json;
     using System.Threading;
     using System.Threading.Tasks;
     using CommandLine;
+    using Services;
 
     public class Program
     {
-        private const string ConfigFileName = "azdns.json";
-        private static SimplisticLogger logger = null;
+        private static SimplisticLogger logger;
 
         public static async Task Main(string[] args)
         {
@@ -25,58 +22,21 @@
             logger = new SimplisticLogger(options.LogFile);
             logger.Init();
 
-            // Check for config file parameter. If the path provided by command line is null,
-            // then check for one by OS location.
-            if (string.IsNullOrEmpty(options.ConfigFile))
-            {
-                await logger.LogInfoAsync("No config file path was provided Using default.");
-                string userFolderPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile); 
-                
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
-                    || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    options.ConfigFile = Path.Combine(userFolderPath, ".config/azdns", ConfigFileName);
-                }
-                else
-                {
-                    options.ConfigFile = Path.Combine(userFolderPath, "AppData\\azdns\\", ConfigFileName);
-                }
-            }
+            IExternalIpProvider ipProvider = new IfConfigIpProvider();
+            IDnsService dns = new AzureDnsService(logger, ipProvider);
 
             // Ensure that config exists. 
-            if (!File.Exists(options.ConfigFile))
+            if (!dns.ConfigFileExists(options.ConfigFile))
             {
-                await logger.LogErrorAsync($"Could not find a config file at {options.ConfigFile}");
-                
-                await logger.LogInfoAsync("Configuration file not found!");
-                try
-                {
-                    await File.WriteAllTextAsync(options.ConfigFile, AzureConfig.CreateJsonTemplate());
-                }
-                catch (Exception e)
-                {
-                    await logger.LogErrorAsync($"Unable to create configuration template!\n----------\n{e.Message}");
-                    await logger.LogInfoAsync("\nA configuration template should be in the working directory of this program by default. You may copy that and provide it vay the '-c' parameter like so: \"/path/to/executable -c /path/to/your/config_file.json\"", true);
-                }
-
-                await logger.LogInfoAsync($"A configuration file is required. A blank one has been created and placed at {options.ConfigFile}");
+                // If the config doesn't exist, create a blank config and exit.
+                await logger.LogInfoAsync("Configuration file not found!\nA template file will be created.");
+                await dns.CreateDefaultConfig();
                 return;
             }
 
-            // Read and parse config
-            AzureConfig config = null;
-            try
-            {
-                string json = await File.ReadAllTextAsync(options.ConfigFile);
-                config = JsonSerializer.Deserialize<AzureConfig>(json) ?? throw new Exception("Deserializer returned a null result somehow.");
-                config.ConfigFilePath = options.ConfigFile;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"Unable to parse configuration file!\n{e.Message}");
-            }
-
-            DnsService dns = new DnsService(config, logger);
+            // Load the provided DNS service config.
+            await dns.LoadServiceConfig(options.ConfigFile);
+            
             while (true)
             {
                 try
