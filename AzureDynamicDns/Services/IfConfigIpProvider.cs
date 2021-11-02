@@ -5,7 +5,7 @@ namespace AzureDynamicDns.Services
 
     public class IfConfigIpProvider : IExternalIpProvider
     {
-        public async Task<string> GetPublicIp()
+        public async Task<string> GetPublicIpAsync()
         {
             var client = new HttpClient();
             return await client.GetStringAsync("https://ifconfig.me");

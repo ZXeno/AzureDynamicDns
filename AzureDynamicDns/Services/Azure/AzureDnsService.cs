@@ -31,11 +31,11 @@ namespace AzureDynamicDns.Services
             this.logger = logger;
             this.ipProvider = ipProvider;
             this.rootDirectoryPath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
                 || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
-                    
+
                 this.configFileDirectory = ".config/azdns";
             }
             else
@@ -43,7 +43,7 @@ namespace AzureDynamicDns.Services
                 this.configFileDirectory = "AppData\\azdns\\";
             }
         }
-        
+
         /// <summary>
         /// Performs the retrieval and update of the DNS record in the configuration.
         /// </summary>
@@ -54,16 +54,16 @@ namespace AzureDynamicDns.Services
             dnsClient.SubscriptionId = config.SubscriptionId;
 
             // Get our external IP. If our external IP matches the last one, there's no need to update.
-            var ip = await this.ipProvider.GetPublicIp();
+            var ip = await this.ipProvider.GetPublicIpAsync();
             if (ip == this.config.LastRecordedIp)
             {
                 return;
             }
-            
+
             // Prepare the DNS record to write.
             var recordSet = new RecordSet
             {
-                TTL = 3600,
+                TTL = 600,
                 ARecords = new List<ARecord>() { new(ip) },
                 Metadata = new Dictionary<string, string>()
                 {
@@ -81,11 +81,11 @@ namespace AzureDynamicDns.Services
                     this.config.Record,
                     RecordType.A,
                     recordSet);
-                
+
                 await logger.LogInfoAsync(
                     JsonSerializer.Serialize(
                         result,
-                        options: new JsonSerializerOptions() {WriteIndented = true}));
+                        options: new JsonSerializerOptions() { WriteIndented = true }));
             }
             catch (Exception e)
             {
@@ -106,23 +106,29 @@ namespace AzureDynamicDns.Services
             }
         }
 
+        /// <summary>
+        /// Checks for the configuration file at the provided path.
+        /// </summary>
         public bool ConfigFileExists(string providedConfig = null)
         {
             string configFilePath = string.Empty;
-            
+
             if (providedConfig is null)
             {
                 this.logger.LogInfoAsync("No config file path was provided. Using default config path.").ConfigureAwait(false);
                 configFilePath = Path.Combine(this.rootDirectoryPath, this.configFileDirectory, ConfigFileName);
             }
-            
+
             return File.Exists(configFilePath);
         }
 
+        /// <summary>
+        /// Loads the service config. If a path is provided, it will load the config at the provided path.
+        /// </summary>
         public async Task LoadServiceConfig(string providedConfig = null)
         {
             string configFilePath = string.Empty;
-            
+
             if (providedConfig is null)
             {
                 await logger.LogInfoAsync("No config file path was provided Using default.");
@@ -134,6 +140,9 @@ namespace AzureDynamicDns.Services
             this.config.ConfigFilePath = configFilePath;
         }
 
+        /// <summary>
+        /// Creates a default configuration file.
+        /// </summary>
         public async Task CreateDefaultConfig()
         {
             try

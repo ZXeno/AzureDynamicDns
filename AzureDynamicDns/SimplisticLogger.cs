@@ -8,6 +8,7 @@ namespace AzureDynamicDns
     /// <summary>
     /// An extremely simplistic logger that formats and outputs info in a style I prefer to read.
     /// The weight of a proper logging framework is overtly excessive for this application and is intentionally not being used.
+    /// If you disagree with this assessment, by all means, please implement one :)
     /// </summary>
     public class SimplisticLogger
     {
@@ -19,6 +20,9 @@ namespace AzureDynamicDns
         public ConsoleColor ErrorColor = ConsoleColor.DarkRed;
         public ConsoleColor SuccessColor = ConsoleColor.Green;
 
+        /// <summary>
+        /// Creates a new isntance of the <see cref="SimplisticLogger"/> class.
+        /// </summary>
         public SimplisticLogger(string logFilePath, string dateTimeFormat = "yyyy-MM-dd hh:mm:ss zz")
         {
             this.logFilePath = logFilePath;
@@ -53,7 +57,7 @@ namespace AzureDynamicDns
                 throw;
             }
         }
-        
+
         /// <summary>
         /// Performs Information level logging.
         /// </summary>
@@ -66,7 +70,7 @@ namespace AzureDynamicDns
             Console.WriteLine(messageText);
             Console.ResetColor();
 
-            if (this.writeLogfile && ! skipLogOutput)
+            if (this.writeLogfile && !skipLogOutput)
             {
                 try
                 {
@@ -76,10 +80,15 @@ namespace AzureDynamicDns
                 {
                     await LogErrorAsync($"Unable to write to log file!", true);
                 }
-                
+
             }
         }
 
+        /// <summary>
+        /// Performs Error level logging.
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="skipLogOutput"></param>
         public async Task LogErrorAsync(string msg, bool skipLogOutput = false)
         {
             Console.ForegroundColor = this.ErrorColor;
@@ -87,7 +96,7 @@ namespace AzureDynamicDns
             Console.WriteLine(messageText);
             Console.ResetColor();
 
-            if (this.writeLogfile && ! skipLogOutput)
+            if (this.writeLogfile && !skipLogOutput)
             {
                 try
                 {
@@ -97,18 +106,23 @@ namespace AzureDynamicDns
                 {
                     await LogErrorAsync($"Unable to write to log file!", true);
                 }
-                
+
             }
         }
 
+        /// <summary>
+        /// Performs Success level logging.
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="skipLogOutput"></param>
         public async Task LogSuccess(string msg, bool skipLogOutput = false)
         {
             Console.ForegroundColor = this.SuccessColor;
             string messageText = $"[{DateTimeOffset.UtcNow.ToString(dateTimeFormat, CultureInfo.InvariantCulture)}][SUCCESS] {msg}";
             Console.WriteLine(messageText);
             Console.ResetColor();
-            
-            if (this.writeLogfile && ! skipLogOutput)
+
+            if (this.writeLogfile && !skipLogOutput)
             {
                 try
                 {
@@ -118,7 +132,7 @@ namespace AzureDynamicDns
                 {
                     await LogErrorAsync($"Unable to write to log file!", true);
                 }
-                
+
             }
         }
     }
