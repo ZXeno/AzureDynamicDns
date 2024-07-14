@@ -2,10 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureDynamicDnsV2", "AzureDynamicDnsV2\AzureDynamicDnsV2.csproj", "{B3FACDA8-5F96-4000-848F-FFD644DD31E8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "legacy", "legacy", "{493887B4-30C5-4CB1-B6F1-7D7298998B13}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureDynamicDns", "..\..\legacy\AzureDynamicDns\AzureDynamicDns.csproj", "{B5EF5FA3-E1F9-4D76-B948-799ACB7E1A23}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,12 +12,7 @@ Global
 		{B3FACDA8-5F96-4000-848F-FFD644DD31E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3FACDA8-5F96-4000-848F-FFD644DD31E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3FACDA8-5F96-4000-848F-FFD644DD31E8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5EF5FA3-E1F9-4D76-B948-799ACB7E1A23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5EF5FA3-E1F9-4D76-B948-799ACB7E1A23}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5EF5FA3-E1F9-4D76-B948-799ACB7E1A23}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5EF5FA3-E1F9-4D76-B948-799ACB7E1A23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{B5EF5FA3-E1F9-4D76-B948-799ACB7E1A23} = {493887B4-30C5-4CB1-B6F1-7D7298998B13}
 	EndGlobalSection
 EndGlobal
