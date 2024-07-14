@@ -12,6 +12,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
         // TODO: OpenTelemetry support
+
         services.AddOptions<AzureOptions>().Configure<IConfiguration>((opts, config) =>
         {
             config.Bind(opts);
