@@ -1,14 +1,13 @@
 using System.Net;
 using Azure;
 using Azure.Core;
+using Azure.Identity;
+using Azure.ResourceManager;
+using Azure.ResourceManager.Dns;
+using Azure.ResourceManager.Resources;
 using AzureDynamicDnsV2.Services.ExternalAddress;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Azure.ResourceManager.Dns;
-using Azure.Identity;
-using Azure.ResourceManager;
-using Azure.ResourceManager.Resources;
-
 
 namespace AzureDynamicDnsV2.Services.Dns;
 
@@ -18,7 +17,7 @@ public sealed class AzureDynDnsService : IAzureDynDnsService
     private readonly IExternalIpProvider ipProvider;
     private readonly AzureOptions config;
     private string lastSeenIp;
-    private string[] recordNames;
+    private readonly string[] recordNames;
 
     public AzureDynDnsService(ILogger<AzureDynDnsService> logger, IExternalIpProvider ipProvider, IOptions<AzureOptions> options)
     {
@@ -26,7 +25,7 @@ public sealed class AzureDynDnsService : IAzureDynDnsService
         this.ipProvider = ipProvider;
         this.config = options.Value;
         this.lastSeenIp = string.Empty;
-        if (this.config.RecordNames.IndexOf(',') <= 0)
+        if (this.config.RecordNames.IndexOf(',') > 0)
         {
             this.recordNames = new[] { this.config.RecordNames
                 .Replace(" ", string.Empty)
@@ -39,6 +38,8 @@ public sealed class AzureDynDnsService : IAzureDynDnsService
 
     public async Task UpdateDns(CancellationToken cancellationToken = default)
     {
+        this.logger.LogTrace("{Source} - Start", nameof(this.UpdateDns));
+
         string retrievedIp = await this.ipProvider.GetPublicIpAsync();
         if (this.lastSeenIp == retrievedIp)
         {

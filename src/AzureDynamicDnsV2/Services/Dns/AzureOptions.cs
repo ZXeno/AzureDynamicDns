@@ -12,11 +12,9 @@ public sealed class AzureOptions
 
     public string SubscriptionId { get; set; }
 
-    public int TimeToLive { get; set; }
+    public int TimeToLive { get; set; } = 3600;
 
     public string ZoneName { get; set; }
 
-    public string AzureRegion { get; set; }
-
-    public int UpdateInterval { get; set; }
+    public int UpdateInterval { get; set; } = 300;
 }

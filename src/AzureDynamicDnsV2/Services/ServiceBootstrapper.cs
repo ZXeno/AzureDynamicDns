@@ -1,10 +1,9 @@
 using AzureDynamicDnsV2.Services.Dns;
 using AzureDynamicDnsV2.Services.ExternalAddress;
-
-namespace AzureDynamicDnsV2.Services;
-
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
+namespace AzureDynamicDnsV2.Services;
 
 public static class ServiceBootstrapper
 {
