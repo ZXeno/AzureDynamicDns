@@ -68,8 +68,8 @@ namespace AzureDynamicDns.Services
                 Metadata = new Dictionary<string, string>()
                 {
                     { "createdBy", "AzureDynamicDns" },
-                    { "updated", DateTimeOffset.UtcNow.ToString("yyyy-MM-dd hh:mm:ss zz", CultureInfo.InvariantCulture) }
-                }
+                    { "updated", DateTimeOffset.UtcNow.ToString("yyyy-MM-dd hh:mm:ss zz", CultureInfo.InvariantCulture) },
+                },
             };
 
             // Do the update
