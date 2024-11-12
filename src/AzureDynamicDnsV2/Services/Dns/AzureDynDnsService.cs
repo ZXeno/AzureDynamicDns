@@ -25,15 +25,14 @@ public sealed class AzureDynDnsService : IAzureDynDnsService
         this.ipProvider = ipProvider;
         this.config = options.Value;
         this.lastSeenIp = string.Empty;
-        if (this.config.RecordNames.IndexOf(',') > 0)
+        this.config.RecordNames = this.config.RecordNames.Replace(" ", string.Empty);
+        if (this.config.RecordNames.IndexOf(',') <= 0)
         {
-            this.recordNames = new[] { this.config.RecordNames
-                .Replace(" ", string.Empty)
-                .Replace("", string.Empty) };
+            this.recordNames = new[] { this.config.RecordNames, };
             return;
         }
 
-        this.recordNames = this.config.RecordNames.Replace(" ", string.Empty).Split(',');
+        this.recordNames = this.config.RecordNames.Split(',');
     }
 
     public async Task UpdateDns(CancellationToken cancellationToken = default)
