@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 IHost host = Host.CreateDefaultBuilder(args)
-    .ConfigureAppConfiguration((context, builder) =>
+    .ConfigureAppConfiguration((_, builder) =>
     {
         builder.AddUserSecrets<Program>();
     })
